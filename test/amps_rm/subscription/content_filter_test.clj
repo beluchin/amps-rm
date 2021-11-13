@@ -4,4 +4,5 @@
 
 (t/deftest and-test
   (t/testing "to string"
-    (t/is (= "(/a=1) AND (/b=2)" (sut/and "/a=1" "/b=2")))))
+    (t/is (= "(/a=1) AND (/b=2)" (sut/to-string (sut/and "/a=1" "/b=2"))))))
+
