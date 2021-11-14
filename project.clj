@@ -1,4 +1,4 @@
-(defproject amps-excel-plugin-core "0.1.0-SNAPSHOT"
+(defproject amps-rm "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.10.1"]
 ;;                 [com.google.guava/guava "29.0-jre"]
                  [com.crankuptheamps/client "5.3.0.4"]]
