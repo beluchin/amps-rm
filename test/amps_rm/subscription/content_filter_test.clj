@@ -23,4 +23,4 @@
   (t/testing "or-ing ands with no common expression"
     (t/is (= "((a) AND (b)) OR ((c) AND (d))"
              (sut/to-string (sut/or (sut/and :a :b)
-                                    (sut/and :d :c)))))))
+                                    (sut/and :c :d)))))))

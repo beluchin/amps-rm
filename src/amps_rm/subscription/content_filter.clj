@@ -24,7 +24,8 @@
     (if (seq intersection)
       (->And (h/single intersection)
              (->Or (h/single (set/difference set1 intersection))
-                   (h/single (set/difference set2 intersection)))))))
+                   (h/single (set/difference set2 intersection))))
+      (->Or and1 and2))))
 
 (defn and [cf1 cf2]
   (->And cf1 cf2))
