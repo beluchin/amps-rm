@@ -34,3 +34,7 @@
   (if (clojure.core/and (instance? And cf1) (instance? And cf2))
     (try-to-recombine-into-and cf1 cf2)
     (->Or cf1 cf2)))
+
+(defn add [cf cf1])
+
+(defn remove [cf cf1])

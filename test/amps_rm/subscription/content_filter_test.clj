@@ -24,3 +24,10 @@
     (t/is (= "((a) AND (b)) OR ((c) AND (d))"
              (sut/to-string (sut/or (sut/and :a :b)
                                     (sut/and :c :d)))))))
+
+(t/deftest add-test
+  (t/testing "add'ing is like or'ing"
+    (t/is (= (sut/or :a :b) (sut/add :a :b)))))
+
+(t/deftest remove-test
+  (t/is (= :a (sut/remove (sut/add :a :b) :b))))
