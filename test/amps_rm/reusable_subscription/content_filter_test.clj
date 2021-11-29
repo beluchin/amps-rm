@@ -4,7 +4,9 @@
 
 (t/deftest and-test
   (t/testing "string form"
-    (t/is (= "(/a=1) AND (/b=2)" (sut/string-form (sut/and "/a=1" "/b=2")))))
+    (t/is (#{"(/a=1) AND (/b=2)"
+             "(/b=2) AND (/a=1)"}
+            (sut/string-form (sut/and "/a=1" "/b=2")))))
 
   (t/testing "nil"
     (t/is (= "/a=1" (sut/and "/a=1" nil))))
@@ -17,7 +19,9 @@
 
 (t/deftest add-test
   (t/testing "basically an or"
-    (t/is (= "(/a=1) OR (/b=2)" (sut/string-form (sut/add "/a=1" "/b=2")))))
+    (t/is (#{"(/a=1) OR (/b=2)"
+             "(/b=2) OR (/a=1)"}
+            (sut/string-form (sut/add "/a=1" "/b=2")))))
 
   (t/testing "commutative"
     (t/is (= (sut/add "/a=1" "/b=2") (sut/add "/b=2" "/a=1"))))  

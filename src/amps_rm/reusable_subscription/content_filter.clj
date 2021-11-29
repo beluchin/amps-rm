@@ -17,7 +17,7 @@
 
 (defn add [cf1 cf2])
 
-(defn and [cf1 cf2 & more]
-  (->And (into more [cf2 cf1])))
+(defn and [& [_ _ & _ :as args]]
+  (->And (set args)))
 
 (defn remove [cf to-remove])
