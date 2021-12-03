@@ -9,7 +9,8 @@
             (sut/string-form (sut/and "/a=1" "/b=2")))))
 
   (t/testing "nil"
-    (t/is (= "/a=1" (sut/and "/a=1" nil))))
+    (t/is (= "/a=1" (sut/string-form (sut/and "/a=1" nil))))
+    (t/is (= "/a=1" (sut/string-form (sut/and nil "/a=1")))))
 
   (t/testing "commutative"
     (t/is (= (sut/and "/a=1" "/b=2") (sut/and "/b=2" "/a=1"))))

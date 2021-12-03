@@ -18,6 +18,10 @@
 (defn add [cf1 cf2])
 
 (defn and [& [_ _ & _ :as args]]
-  (->And (set args)))
+  (let [non-nil-args (set (filter some? args))]
+    (when (seq non-nil-args)
+      (if (= 1 (count non-nil-args))
+        (first non-nil-args)
+        (->And non-nil-args)))))
 
 (defn remove [cf to-remove])
