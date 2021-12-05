@@ -48,5 +48,10 @@
     (t/is (= "/a=1" (sut/add "/a=1" nil)))
     (t/is (= "/a=1" (sut/add nil "/a=1")))))
 
+(t/deftest remove-test
+  (t/is (= :a (sut/remove (sut/add :a :b) :b)))
+  (t/is (= :a (sut/remove :a :b)))
+  (t/is (nil? (sut/remove :a :a))))
+
 (t/deftest string-form-test
   (t/is (= "/a=1" (sut/string-form "/a=1"))))
