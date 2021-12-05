@@ -31,15 +31,17 @@
   (t/testing "commutative"
     (t/is (= (sut/add "/a=1" "/b=2") (sut/add "/b=2" "/a=1"))))  
 
-  (t/testing "recombines and's"
-    (t/is (= (sut/and "/a=1" (sut/add "/b=2" "/c=3"))
-             (sut/add (sut/and "/a=1" "/b=2")
-                      (sut/and "/a=1" "/c=3"))))
+  (t/testing "recombines and's if possible"
+    (t/is (= (sut/and :a (sut/or :b :c))
+             (sut/add (sut/and :a :b)
+                      (sut/and :a :c))))
     (t/is (= (sut/and :a :b (sut/add :c :d))
              (sut/add (sut/and :a :b :c)
-                      (sut/and :a :b :d)))))
+                      (sut/and :a :b :d))))
+    (t/is (= "((c) AND (d)) OR ((b) AND (a))"
+             (sut/string-form (sut/or (sut/and :a :b) (sut/and :c :d))))))
 
-  (t/testing "turns or's into in's"
+  #_(t/testing "turns or's into in's"
     (throw (UnsupportedOperationException.)))
 
   (t/testing "nil"

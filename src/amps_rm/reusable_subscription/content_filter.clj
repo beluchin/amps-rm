@@ -20,34 +20,37 @@
                         (map #(format "(%s)" (string-form %)))
                         (String/join " OR "))))
 
-(defn- try-to-recombine-or-into-and [and-set]
-  (->Or and-set)
-  #_(let [sets (map :operand-set and-set)
-          intersection (apply set/intersection sets)]
-      (if (seq intersection)
-        (->And (h/single intersection)
-               (->Or (h/single (set/difference set1 intersection))
-                     (h/single (set/difference set2 intersection))))
-        (->Or and1 and2))))
+(declare and)
+(defn- try-to-recombine-or-into-and [ands]
+  (let [sets (map :operand-set ands)
+        intersection (apply set/intersection sets)]
+    (if (seq intersection)
+      (->And (conj intersection
+                   (->Or (set/difference (apply set/union sets) intersection))))
+      (->Or ands))))
 
 (declare or)
 (defn add [cf1 cf2]
   (or cf1 cf2))
 
-(defn and [& [_ _ & _ :as args]]
-  (let [non-nil-args (set (filter some? args))]
-    (when (seq non-nil-args)
-      (if (= 1 (count non-nil-args))
-        (first non-nil-args)
-        (->And non-nil-args)))))
+(defn and
+  ([x] x)
+  ([x y & more]
+   (let [non-nil-args (set (filter some? (conj more x y)))]
+     (when (seq non-nil-args)
+       (if (= 1 (count non-nil-args))
+         (first non-nil-args)
+         (->And non-nil-args))))))
 
-(defn or [& [_ _ & _ :as args]]
-  (let [non-nil-args (set (filter some? args))]
-    (when (seq non-nil-args)
-      (if (= 1 (count non-nil-args))
-        (first non-nil-args)
-        (if (every? #(instance? And %) non-nil-args)
-          (try-to-recombine-or-into-and non-nil-args)
-          (->Or non-nil-args))))))
+(defn or
+  ([x] x)
+  ([x y & more]
+   (let [non-nil-args (set (filter some? (conj more x y)))]
+     (when (seq non-nil-args)
+       (if (= 1 (count non-nil-args))
+         (first non-nil-args)
+         (if (every? #(instance? And %) non-nil-args)
+           (try-to-recombine-or-into-and non-nil-args)
+           (->Or non-nil-args)))))))
 
 (defn remove [cf to-remove])
