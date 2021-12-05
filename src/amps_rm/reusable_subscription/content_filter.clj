@@ -23,7 +23,7 @@
 (defn- try-to-recombine-or-into-and [and-set]
   (->Or and-set)
   #_(let [sets (map :operand-set and-set)
-          intersection (set/intersection set1 set2)]
+          intersection (apply set/intersection sets)]
       (if (seq intersection)
         (->And (h/single intersection)
                (->Or (h/single (set/difference set1 intersection))
