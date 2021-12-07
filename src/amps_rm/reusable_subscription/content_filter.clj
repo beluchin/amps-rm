@@ -14,11 +14,15 @@
                         (map #(format "(%s)" (string-form %)))
                         (String/join " AND "))))
 
+(declare try-to-recombine-or-into-and)
 (defrecord ^:private Or [operand-set]
   StringForm
-  (string-form [_] (->> operand-set
-                        (map #(format "(%s)" (string-form %)))
-                        (String/join " OR "))))
+  (string-form [this] (let [recombined (try-to-recombine-or-into-and operand-set)]
+                        (if (not= recombined this)
+                          (string-form recombined)
+                          (->> operand-set
+                               (map #(format "(%s)" (string-form %)))
+                               (String/join " OR "))))))
 
 (declare and)
 (defn- try-to-recombine-or-into-and [ands]
@@ -49,8 +53,6 @@
      (when (seq non-nil-args)
        (if (= 1 (count non-nil-args))
          (first non-nil-args)
-         (if (every? #(instance? And %) non-nil-args)
-           (try-to-recombine-or-into-and non-nil-args)
-           (->Or non-nil-args)))))))
+         (->Or non-nil-args))))))
 
 (defn remove [cf to-remove])

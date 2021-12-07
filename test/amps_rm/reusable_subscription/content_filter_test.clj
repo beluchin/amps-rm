@@ -32,17 +32,17 @@
     (t/is (= (sut/add "/a=1" "/b=2") (sut/add "/b=2" "/a=1"))))  
 
   (t/testing "recombines and's if possible"
-    (t/is (= (sut/and :a (sut/or :b :c))
-             (sut/add (sut/and :a :b)
-                      (sut/and :a :c))))
-    (t/is (= (sut/and :a :b (sut/add :c :d))
-             (sut/add (sut/and :a :b :c)
-                      (sut/and :a :b :d))))
+    (t/is (= "((c) OR (b)) AND (a)"
+             (sut/string-form (sut/add (sut/and :a :b)
+                                       (sut/and :a :c)))))
+    (t/is (= "((c) OR (d)) AND (b) AND (a)"
+             (sut/string-form (sut/add (sut/and :a :b :c)
+                                       (sut/and :a :b :d)))))
     (t/is (= "((c) AND (d)) OR ((b) AND (a))"
              (sut/string-form (sut/or (sut/and :a :b) (sut/and :c :d))))))
 
   #_(t/testing "turns or's into in's"
-    (throw (UnsupportedOperationException.)))
+      (throw (UnsupportedOperationException.)))
 
   (t/testing "nil"
     (t/is (= "/a=1" (sut/add "/a=1" nil)))
