@@ -8,21 +8,36 @@
   String
   (string-form [cf] cf))
 
-(defrecord ^:private And [operand-set]
-  StringForm
-  (string-form [_] (->> operand-set
-                        (map #(format "(%s)" (string-form %)))
-                        (String/join " AND "))))
+(defprotocol Remove
+  (remove [cf to-remove]))
 
-(declare try-to-recombine-or-into-and)
-(defrecord ^:private Or [operand-set]
+(defrecord ^:private And [operand-set])
+(extend-type And
   StringForm
-  (string-form [this] (let [recombined (try-to-recombine-or-into-and operand-set)]
-                        (if (not= recombined this)
-                          (string-form recombined)
-                          (->> operand-set
-                               (map #(format "(%s)" (string-form %)))
-                               (String/join " OR "))))))
+  (string-form [this] (->> (:operand-set this)
+                        (map #(format "(%s)" (string-form %)))
+                        (String/join " AND ")))
+  Remove
+  (remove [this to-remove] this))
+
+(declare or try-to-recombine-or-into-and)
+(defrecord ^:private Or [operand-set])
+(extend-type Or
+  StringForm
+  (string-form [this]
+    (let [operand-set (:operand-set this)
+          recombined (try-to-recombine-or-into-and operand-set)]
+      (if (not= recombined this)
+        (string-form recombined)
+        (->> operand-set
+             (map #(format "(%s)" (string-form %)))
+             (String/join " OR ")))))
+  Remove
+  (remove [this to-remove]
+    (let [operand-set (:operand-set this)]
+      (if (contains? operand-set to-remove)
+        (apply or (clojure.core/remove #{to-remove} operand-set))
+        this))))
 
 (declare and)
 (defn- try-to-recombine-or-into-and [ands]
@@ -54,5 +69,3 @@
        (if (= 1 (count non-nil-args))
          (first non-nil-args)
          (->Or non-nil-args))))))
-
-(defn remove [cf to-remove])

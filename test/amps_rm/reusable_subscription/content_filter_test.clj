@@ -49,9 +49,16 @@
     (t/is (= "/a=1" (sut/add nil "/a=1")))))
 
 (t/deftest remove-test
-  (t/is (= :a (sut/remove (sut/add :a :b) :b)))
-  (t/is (= :a (sut/remove :a :b)))
-  (t/is (nil? (sut/remove :a :a))))
+  (t/testing "remove if added (or'ed) previously"
+    (t/is (= :a (sut/remove (sut/add :a :b) :b)))
+    (t/is (= (sut/or :a :b) (sut/remove (sut/add :a :b) :c))))
+  
+  (t/testing "remove if identical"
+    (t/is (nil? (sut/remove :a :a))))
+  
+  (t/testing "otherwise is unsupported"
+    (t/is (thrown? UnsupportedOperationException (sut/remove :a :b)))))
 
 (t/deftest string-form-test
   (t/is (= "/a=1" (sut/string-form "/a=1"))))
+  
