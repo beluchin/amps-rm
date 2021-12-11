@@ -12,7 +12,7 @@
              "(/b=2) AND (/a=1)"}
             (sut/string-form (sut/and "/a=1" "/b=2")))))
 
-  (t/testing "nil"
+  (t/testing "collapse nil"
     (t/is (= "/a=1" (sut/and "/a=1" nil)))
     (t/is (= "/a=1" (sut/and nil "/a=1"))))
 
@@ -44,7 +44,7 @@
   #_(t/testing "turns or's into in's"
       (throw (UnsupportedOperationException.)))
 
-  (t/testing "nil"
+  (t/testing "collapse nil"
     (t/is (= "/a=1" (sut/add "/a=1" nil)))
     (t/is (= "/a=1" (sut/add nil "/a=1")))))
 
@@ -61,4 +61,3 @@
 
 (t/deftest string-form-test
   (t/is (= "/a=1" (sut/string-form "/a=1"))))
-  

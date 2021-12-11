@@ -10,15 +10,18 @@
 
 (defprotocol Remove
   (remove [cf to-remove]))
+(extend-protocol Remove
+  Object
+  (remove [this to-remove]
+    (when-not (= this to-remove)
+      (throw (UnsupportedOperationException.)))))
 
 (defrecord ^:private And [operand-set])
 (extend-type And
   StringForm
   (string-form [this] (->> (:operand-set this)
                         (map #(format "(%s)" (string-form %)))
-                        (String/join " AND ")))
-  Remove
-  (remove [this to-remove] this))
+                        (String/join " AND "))))
 
 (declare or try-to-recombine-or-into-and)
 (defrecord ^:private Or [operand-set])
@@ -32,6 +35,7 @@
         (->> operand-set
              (map #(format "(%s)" (string-form %)))
              (String/join " OR ")))))
+ 
   Remove
   (remove [this to-remove]
     (let [operand-set (:operand-set this)]
